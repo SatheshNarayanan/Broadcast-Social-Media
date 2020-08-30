@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-light red">
+  <a class="navbar-brand" href="/">
+    <img src="../public/images/share.png" width="30" height="30" alt="" loading="lazy">
+    Broadcast
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse row justify-content-end mr-5" id="navbarNavDropdown">
+    <ul class="navbar-nav ">
+      {{#if (ifEquality login "false")}}
+      <li class="nav-item pl-5 {{#if (ifEquality title "Login")}}active{{/if}}">
+        <a class="nav-link" href="/">Login {{#if (ifEquality title "Login")}}<span
+            class="sr-only">(current)</span>{{/if}}</a>
+      </li>
+      <li class="nav-item pl-5 {{#if (ifEquality title "Sign up")}}active{{/if}}">
+        <a class="nav-link" href="/signup">Sign up {{#if (ifEquality title "Sign up")}}<span
+            class="sr-only">(current)</span>{{/if}}</a>
+      </li>
+      {{else}}
+      <li class="nav-item pl-5 {{#if (ifEquality title "Find Users")}}active{{/if}}">
+        <a class="nav-link" href="/findUsers">Find Users {{#if (ifEquality title "Find Users")}}<span
+            class="sr-only">(current)</span>{{/if}}</a>
+      </li>
+      <li class="nav-item pl-5 {{#if (ifEquality title "Create Post")}}active{{/if}}">
+        <a class="nav-link" href="/createPost">Create Post {{#if (ifEquality title "Create Post")}}<span
+            class="sr-only">(current)</span>{{/if}}</a>
+      </li>
+      <li class="nav-item pl-5 {{#if (ifEquality title "My Posts")}}active{{/if}}">
+        <a class="nav-link" href="/myPosts">My Posts {{#if (ifEquality title "My Posts")}}<span
+            class="sr-only">(current)</span>{{/if}}</a>
+      </li>
+      <li class="nav-item pl-5 {{#if (ifEquality title "Profile")}}active{{/if}}">
+        <a class="nav-link" href="/profile">Profile {{#if (ifEquality title "Profile")}}<span
+            class="sr-only">(current)</span>{{/if}}</a>
+      </li>
+      <li class="nav-item pl-5 {{#if (ifEquality title "Logout")}}active{{/if}}">
+        <a class="nav-link" href="/logout">Logout {{#if (ifEquality title "Logout")}}<span
+            class="sr-only">(current)</span>{{/if}}</a>
+      </li>
+      {{/if}}
+
+
+    </ul>
+
+  </div>
+
+</nav>

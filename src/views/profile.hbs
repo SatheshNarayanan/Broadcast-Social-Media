@@ -1,0 +1,55 @@
+<div class="container my-5 py-3  ">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-sm-5 col-md-5 text-center">
+      <img src="../public/images/share.png" alt="profile picture" class="img-thumbnail propic">
+    </div>
+    <div class="col-sm-7 col-md-7 text-left my-3">
+      <h1> Welcome {{user.firstName}} {{user.lastName}} !! </h1>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <div class="form-group row my-3 ">
+      <label for="uniqueId" class="col-sm-5 col-form-label  text-center font-weight-bold">Broadcast Id</label>
+      <div class="col-sm-7 ">
+        <input type="text" class="form-control" id="uniqueId" disabled value={{user.uniqueId}}>
+      </div>
+    </div>
+
+    <div class="form-group row my-3 ">
+      <label for="status" class="col-sm-5 col-form-label  text-center font-weight-bold">Status</label>
+      <div class="col-sm-7 ">
+        <input type="text" class="form-control" id="status" disabled value="{{user.status}}">
+      </div>
+    </div>
+
+    <div class="form-group row my-3 ">
+      <label for="followers" class="col-sm-5 col-form-label  text-center font-weight-bold">Followers</label>
+      <div class="col-sm-7 ">
+        <input type="text" class="form-control" id="followers" disabled value="{{user.followers}}">
+      </div>
+    </div>
+    <div class="form-group row my-3 ">
+      <label for="following" class="col-sm-5 col-form-label  text-center font-weight-bold">Following</label>
+      <div class="col-sm-7 ">
+        <input type="text" class="form-control" id="following" disabled value="{{user.following}}">
+      </div>
+    </div>
+
+    <div class="form-group row my-3 ">
+      <label for="myPosts" class="col-sm-5 col-form-label  text-center font-weight-bold">My Posts</label>
+      <div class="col-sm-7 ">
+        <input type="text" class="form-control" id="myPosts" disabled value="{{user.myPosts}}">
+      </div>
+    </div>
+
+    <div class="row mt-5 justify-content-center">
+      <a class="btn btn-primary btn-lg redbutton" href="/editProfile">
+        Edit Profile
+      </a>
+    </div>
+  </div>
+
+
+
+</div>

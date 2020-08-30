@@ -1,0 +1,64 @@
+<div class="container my-5 py-3">
+  <h1 class="text-center mb-5">All Posts</h1>
+  {{#each data}}
+  <div class="row my-5 justify-content-center">
+    <div class="card " style="min-width:100%">
+      <div class="card-header text-white red">
+        {{this.title}}
+      </div>
+      <div class="card-body">
+        <blockquote class="blockquote mb-0">
+          <p>{{this.content}}.</p>
+          <footer class="blockquote-footer"><cite title="Source Title">{{this.name}}</cite></footer>
+          <small>{{this.likes}} <i class="fa fa-thumbs-up px-2 " style="color:black" aria-hidden="true" id="{{this.id}}"
+              onclick="like(this)"></i> Likes , Posted
+            on :
+            {{this.date}}</small>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+
+</div>
+
+<script>
+  let url
+  const like = element => {
+    const id = element.id
+    const colors = element.getAttribute("style", "color")
+    if (colors === "color:black") {
+      url = `/post/like/${id}`
+      element.setAttribute("style", "color:#ec6969")
+    }
+    else {
+      url = `/post/unlike/${id}`
+      element.setAttribute("style", "color:black")
+    }
+    console.log(url, colors)
+
+    const config = {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    fetch(url, config)
+      .then(response => {
+        if (response.status === 200) {
+          window.location.reload()
+        } else {
+          throw (new Error(response.status))
+        }
+      }
+      ).catch(error => {
+        switch (error.message) {
+          case "500":
+            swal("Error", "Please Try after some time...", "error");
+            break;
+          default:
+            console.error(error);
+        }
+      })
+  }
+</script>

@@ -1,0 +1,133 @@
+<div class="container my-5 py-3  ">
+  <form>
+    <div class="form-group">
+      <label for="id">Broadcast Unique Id</label>
+      <input type="text" class="form-control" id="id" name="id" onkeyup="fetchUser(this)" required>
+      <small>All letters are small in Unique id's</small>
+    </div>
+    <input type="hidden" class="form-control" id="hidden" value="{{user.email}}" required>
+  </form>
+
+  <div id="lists">
+
+  </div>
+</div>
+
+<script>
+  const email = document.getElementById("hidden").value
+  const Lists = document.getElementById("lists")
+  console.log(email)
+
+  const followFunc = elem => {
+    const linkToFecth = elem.alt
+    console.log(elem)
+    console.log(elem.alt)
+    const config = {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    fetch(linkToFecth, config)
+      .then(response => {
+        if (response.status === 200) {
+          console.log(linkToFecth[6])
+          if (linkToFecth[6] === 'f') {
+            console.log("hello")
+            elem.value = "Un Follow"
+            let linkChange = elem.alt.split("/")
+            console.log(linkChange)
+            linkChange[2] = "unfollow"
+            elem.alt = linkChange.join("/")
+          } else {
+            console.log("hi")
+            elem.value = "Follow"
+            let linkChange = elem.alt.split("/")
+            linkChange[2] = "follow"
+            elem.alt = linkChange.join("/")
+          }
+          return response
+        } else {
+          throw (new Error(response.status))
+        }
+      }
+      ).catch(error => {
+        switch (error.message) {
+          case "500":
+            swal("Error", "Please Try after some time...", "error");
+            break;
+          default:
+            console.error(error);
+        }
+      })
+  }
+
+  const createElements = (tagType, classNames, idNames, innerdata, appendToType, appendTo) => {
+    const tags = document.createElement(tagType)
+    tags.setAttribute("class", classNames)
+    tags.setAttribute("id", idNames)
+    tags.innerHTML = innerdata
+    if (appendToType === 'Child') {
+      appendTo.appendChild(tags)
+    }
+    else {
+      appendTo.append(tags)
+    }
+  }
+  const fetchUser = async element => {
+    const findusers = element.value
+    const config = {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    fetch(`/user/findusers/${findusers}`, config)
+      .then(response => {
+        if (response.status === 200) {
+          while (Lists.firstChild) {
+            Lists.removeChild(Lists.firstChild);
+          }
+          return response.json()
+        } else {
+          throw (new Error(response.status))
+        }
+      }
+      )
+      .then(data => {
+        let hreference, texts
+        let result = data.data
+        console.log(result)
+        result.forEach(element => {
+          createElements("div", "card mb-3", `${element._id}head`, "", 'Child', Lists)
+          const mainCard = document.getElementById(`${element._id}head`)
+          createElements("h5", "card-header", `${element._id}header`, element.firstName + " " + element.lastName, 'Child', mainCard)
+          createElements("div", "card-body", `${element._id}body`, `Email :  ${element.email}, Status : ${element.status}`, 'Child', mainCard)
+          const mainBody = document.getElementById(`${element._id}body`)
+          createElements("br", "", ``, '', 'Child', mainBody)
+          if (element.password === 'yes') {
+            hreference = `/user/unfollow/${element._id}`
+            texts = 'Un Follow'
+          } else {
+            hreference = `/user/follow/${element._id}`
+            texts = 'Follow'
+          }
+          createElements("input", "btn btn-primary my-3 text-white redbutton", `${element.email}button`, '', 'Child', mainBody)
+          document.getElementById(`${element.email}button`).setAttribute("alt", hreference)
+          document.getElementById(`${element.email}button`).setAttribute("value", texts)
+          document.getElementById(`${element.email}button`).setAttribute("onclick", "followFunc(this)")
+          document.getElementById(`${element.email}button`).setAttribute("type", "button")
+
+        })
+      })
+      .catch(error => {
+        switch (error.message) {
+          case "500":
+            swal("Error", "Please Try after some time...", "error");
+            break;
+          default:
+            console.error(error);
+        }
+      })
+  }
+</script>

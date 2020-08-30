@@ -1,0 +1,24 @@
+{
+  "name": "brodcast",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "bcrypt": "5.0.0",
+    "body-parser": "1.19.0",
+    "cookie-parser": "1.4.5",
+    "express": "4.17.1",
+    "express-handlebars": "5.1.0",
+    "joi": "17.2.1",
+    "jsonwebtoken": "8.5.1",
+    "mongoose": "5.10.2",
+    "multer": "1.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.4"
+  },
+  "keywords": []
+}

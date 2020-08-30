@@ -1,0 +1,191 @@
+<div class="container my-5 py-3 ">
+  <h1>Sign Up</h1>
+  <form id="user-form" class="my-5" action="{{action}}" method="{{method}}" _method="{{method}}" autocomplete="off">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName" onkeyup="inputChecker(this)" required
+          value={{user.firstName}}>
+        <div class="invalid-feedback"> Please Enter a Valid First Name</div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" name="lastName" onkeyup="inputChecker(this)" required
+          value={{user.lastName}}>
+        <div class="invalid-feedback"> Please Enter a Valid Last Name</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" name="email" required value={{user.email}}>
+      <div class="invalid-feedback"> Please enter a valid email</div>
+    </div>
+    {{#if (ifEquality title "Sign up")}}
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" name="password" onkeyup="passChecker(this)" required
+        value="">
+      <div class="invalid-feedback"> Password must contain atleast 8 characters</div>
+    </div>
+    {{/if}}
+
+
+    <div class="form-row">
+
+      <div class="form-group col-md-3">
+        <label for="status">Status</label>
+        <select class="form-control" id="status" name="status">
+          <option value="Single" {{#if (ifEquality user.status "Single")}} selected {{/if}}>Single</option>
+          <option value="Married" {{#if (ifEquality user.status "Married")}} selected {{/if}}>Married</option>
+          <option value="Committed" {{#if (ifEquality user.status "Committed")}} selected {{/if}}>Committed</option>
+          <option value="Complicated" {{#if (ifEquality user.status "Complicated")}} selected {{/if}}>Complicated
+          </option>
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-3">
+        <label for="uniqueId">Unique Id</label>
+        <input type="text" class="form-control" id="uniqueId" name="uniqueId" required onkeyup="idChecker(this)"
+          value={{user.uniqueId}}>
+        <div class="invalid-feedback"> Broadcast Id is already taken or invalid</div>
+      </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="user-gender">Gender</label>
+        <div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" id="Male" required value="Male"
+              {{#if (ifEquality user.gender "Male")}}checked{{/if}}>
+            <label class="form-check-label" for="Male">Male</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" id="Female" value="Female"
+              {{#if (ifEquality user.gender "Female")}}checked{{/if}}>
+            <label class="form-check-label" for="Female">Female</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-2">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg redbutton">
+      {{#if (ifEquality title "Sign up")}} Sign up{{else}} Update details{{/if}}
+    </button>
+  </form>
+</div>
+
+
+<script>
+  const $addUserform = document.querySelector("#user-form");
+  const $uniqueId = document.querySelector("#uniqueId");
+  const stringFormat = /^[A-Za-z]*$/
+  const validationObject = {
+    "firstName": true,
+    "lastName": true,
+    "uniqueId": true
+  }
+
+  const idChecker = async element => {
+    const id = element.value
+    const config = {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    fetch(`/user/uniqueid/${id}`, config)
+      .then(response => {
+        if (response.status === 200) {
+          $uniqueId.setAttribute("class", "form-control")
+          validationObject[element.id] = true
+        } else {
+          $uniqueId.setAttribute("class", "form-control is-invalid")
+          validationObject[element.id] = false
+        }
+      }
+      )
+  }
+  //Front-end Validations
+  const inputChecker = element => {
+    const data = element.value
+    const matcher = stringFormat;
+    if (!data.match(matcher)) {
+      element.setAttribute("class", "form-control is-invalid")
+      validationObject[element.id] = false
+    } else {
+      element.setAttribute("class", "form-control")
+      validationObject[element.id] = true
+    }
+  }
+
+  const passChecker = element => {
+    const data = element.value
+    if (data.length < 8) {
+      element.setAttribute("class", "form-control is-invalid")
+      validationObject[element.id] = false
+    } else {
+      element.setAttribute("class", "form-control")
+      validationObject[element.id] = true
+    }
+  }
+  $addUserform.addEventListener("submit", event => {
+    event.preventDefault()
+
+    for (var key in validationObject) {
+      if (!validationObject[key]) {
+        swal("Error", "Please enter Correct data before submitting the form", "warning");
+        return false;
+      }
+    }
+
+    const submitUrl = $addUserform.action;
+    const submitMethod = $addUserform.getAttribute("_method");
+    const formData = new FormData($addUserform);
+    let userDetail = {};
+    for (const fields of formData.entries()) {
+      const [key, value] = fields;
+      userDetail[key] = value;
+    }
+
+    const config = {
+      method: submitMethod.toUpperCase(),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userDetail)
+    }
+
+    fetch(submitUrl, config)
+      .then(response => {
+        if (response.status === 200) {
+          return response.json()
+        } else {
+          throw (new Error(response.status))
+        }
+      }
+      )
+      .then(data => {
+        swal("Great Job!!", data.message, "success")
+          .then((value) => {
+            window.location.href = "/"
+          });
+      })
+      .catch(error => {
+        switch (error.message) {
+          case "401":
+            swal("Error", "Email has already been registered.", "error");
+            break;
+          case "400":
+            swal("Error", "Please check form values...", "error");
+            break;
+          case "500":
+            swal("Error", "Please Try after some time...", "error");
+            break;
+          default:
+            console.error(error);
+        }
+      })
+  })
+</script>

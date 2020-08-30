@@ -1,0 +1,121 @@
+<div class="container my-5 py-3">
+  <h1 class="text-center mb-5">What's on your mind??</h1>
+  <form id="post-form" class="my-5" action="{{action}}" method="{{method}}" _method="{{method}}" autocomplete="off">
+    <div class="mb-3">
+      <label for="title " class="font-weight-bold">Title</label>
+      <textarea class="form-control" id="title" name="title" placeholder="Title of the post" rows="1"
+        onkeyup="lengthCheck(this)" required></textarea>
+      <div class="invalid-feedback">
+        Maximum number of characters allowed in 40.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="content" class="font-weight-bold">Content</label>
+      <textarea class="form-control" id="content" name="content" placeholder="Content straight from your heart"
+        rows="10" onkeyup="lengthCheck(this)" required></textarea>
+      <small id="passwordHelpBlock" class="form-text text-muted">
+        Maximum number of characters allowed in 150.
+      </small>
+      <div class="invalid-feedback">
+        Maximum character limt exceed.
+      </div>
+    </div>
+
+    <!-- <div class="input-group is-invalid">
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+        <label class="custom-file-label" for="validatedInputGroupCustomFile">Choose file...</label>
+      </div>
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button">Button</button>
+      </div>
+    </div>
+    <div class="invalid-feedback">
+      Example invalid input group feedback
+    </div> -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary redbutton">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const $addPostform = document.querySelector("#post-form");
+  const validationObject = {
+    "title": true,
+    "content": true,
+  }
+
+  const lengthCheck = element => {
+    const data = element.value
+    const id = element.id
+    const lengths = (id === "content") ? 150 : 40
+    if (data.length > lengths) {
+      element.setAttribute("class", "form-control is-invalid")
+      validationObject[element.id] = false
+    } else {
+      element.setAttribute("class", "form-control")
+      validationObject[element.id] = true
+    }
+  }
+
+  $addPostform.addEventListener("submit", event => {
+    event.preventDefault()
+
+    for (var key in validationObject) {
+      if (!validationObject[key]) {
+        swal("Error", "Please enter Correct data before submitting the Post", "warning");
+        return false;
+      }
+    }
+
+    const submitUrl = $addPostform.action;
+    const submitMethod = $addPostform.getAttribute("_method");
+    const formData = new FormData($addPostform);
+    let userDetail = {};
+    for (const fields of formData.entries()) {
+      const [key, value] = fields;
+      userDetail[key] = value;
+    }
+
+    const config = {
+      method: submitMethod.toUpperCase(),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userDetail)
+    }
+
+    fetch(submitUrl, config)
+      .then(response => {
+        if (response.status === 200) {
+          return response.json()
+        } else {
+          throw (new Error(response.status))
+        }
+      }
+      )
+      .then(data => {
+        swal("Great Job!!", data.message, "success")
+          .then((value) => {
+            window.location.href = "/"
+          });
+      })
+      .catch(error => {
+        switch (error.message) {
+          case "401":
+            swal("Error", "Email has already been registered.", "error");
+            break;
+          case "400":
+            swal("Error", "Please check form values...", "error");
+            break;
+          case "500":
+            swal("Error", "Please Try after some time...", "error");
+            break;
+          default:
+            console.error(error);
+        }
+      })
+  })
+</script>
